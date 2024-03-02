@@ -1,4 +1,4 @@
-const { combine } = require('../src/algorithms/combinations');
+const { combine } = require('../src/combinations');
 
 describe('combine', () => {
   test('should return the correct combinations', () => {

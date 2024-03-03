@@ -29,23 +29,26 @@ function fileFormatting(spacesForStrings) {
   let minimalKeyPress = 0;
 
   for (let spaces of spacesForStrings) {
+    let reminder = 0;
+
     while (spaces >= 4) {
       if (spaces % 4 === 0) {
         minimalKeyPress += spaces / 4;
         spaces = 0;
-      } else if ((spaces - 3) % 4 === 0) {
-        minimalKeyPress += 2;
-        spaces -= 3;
       } else {
         spaces--;
-        minimalKeyPress++;
+        reminder++;
       }
     }
 
-    if (spaces === 3) {
+    if (spaces > 0) {
+      reminder = spaces;
+    }
+
+    if (reminder === 3) {
       minimalKeyPress += 2;
     } else {
-      minimalKeyPress += spaces;
+      minimalKeyPress += reminder;
     }
 
   }

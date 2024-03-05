@@ -1,4 +1,4 @@
-const { fileFormatting } = require('../src/file-formatting');
+const { fileFormatting } = require('../../src/file-formatting');
 
 describe('fileFormatting', () => {
   it('should return the number of spaces for strings', () => {

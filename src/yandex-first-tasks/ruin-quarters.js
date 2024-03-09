@@ -26,12 +26,15 @@ function program() {
   sendOutput(result);
 }
 
+
 function playTheGame(
   mySoldiersAmount,
   enemyHealthPoints,
   enemySoldiersProduce
 ) {
   let winRound = 1;
+  let alternativeRounds = -1;
+
   enemyHealthPoints -= mySoldiersAmount;
 
   if (enemyHealthPoints <= 0) {
@@ -44,43 +47,48 @@ function playTheGame(
       `winRound=${winRound}, mySoldiers=${mySoldiersAmount}, enemyHealth=${enemyHealthPoints}, enemies=${enemySoldiersAmount}`
     );
 
-    if (
-      mySoldiersAmount <= 0 ||
-      (mySoldiersAmount === enemySoldiersAmount &&
-        mySoldiersAmount === enemySoldiersProduce)
-    ) {
+    if (mySoldiersAmount <= 0) {
       console.log("--------------");
-      return -1;
+      return alternativeRounds !== -1 ? alternativeRounds : -1;
     }
     if (enemyHealthPoints <= 0 && enemySoldiersAmount <= 0) {
       console.log("--------------");
-      return winRound;
+      if (alternativeRounds === -1) {
+        return winRound;
+      }
+      return winRound < alternativeRounds ? winRound : alternativeRounds;
     }
 
     let reminder = mySoldiersAmount - enemyHealthPoints;
+    let enemiesAfterKillingBase = enemySoldiersAmount - reminder;
     if (
       enemyHealthPoints - mySoldiersAmount <= 0 &&
-      reminder > enemySoldiersAmount
+      mySoldiersAmount - enemiesAfterKillingBase >= enemiesAfterKillingBase
     ) {
-      enemyHealthPoints -= mySoldiersAmount;
+      enemyHealthPoints = 0;
       enemySoldiersAmount -= reminder;
     } else {
-      let reminder;
+      if (enemyHealthPoints - mySoldiersAmount <= 0) {
+        let result = canWin(
+          mySoldiersAmount - enemiesAfterKillingBase,
+          enemySoldiersAmount - reminder
+        );
+        if (
+          (alternativeRounds === -1 && result !== -1) || (alternativeRounds !== -1 && result !== -1 && (result + winRound + 1 < alternativeRounds))) {
+          alternativeRounds = result + winRound + 1;
+        }
+      }
+
+      let reminder2;
 
       if (enemySoldiersAmount <= mySoldiersAmount) {
-        if (mySoldiersAmount - enemyHealthPoints > enemySoldiersAmount) {
-          reminder = mySoldiersAmount - enemyHealthPoints;
-          enemyHealthPoints = 0;
-          enemySoldiersAmount -= reminder;
-        } else {
-          reminder = mySoldiersAmount - enemySoldiersAmount;
-          enemySoldiersAmount = 0;
-          enemyHealthPoints -= reminder;
-        }
+        reminder2 = mySoldiersAmount - enemySoldiersAmount;
+        enemySoldiersAmount = 0;
+        enemyHealthPoints -= reminder2;
       } else if (enemyHealthPoints <= mySoldiersAmount) {
-        reminder = mySoldiersAmount - enemyHealthPoints;
+        reminder2 = mySoldiersAmount - enemyHealthPoints;
         enemyHealthPoints = 0;
-        enemySoldiersAmount -= reminder;
+        enemySoldiersAmount -= reminder2;
       } else {
         enemySoldiersAmount -= mySoldiersAmount;
       }
@@ -89,8 +97,27 @@ function playTheGame(
     mySoldiersAmount -= enemySoldiersAmount;
     if (enemyHealthPoints > 0) {
       enemySoldiersAmount += enemySoldiersProduce;
+      if (enemySoldiersAmount === mySoldiersAmount) {
+        return (alternativeRounds != -1) ? alternativeRounds : -1;
+      }
     }
     ++winRound;
+  }
+}
+
+function canWin(mySoldiersAmount, enemySoldiersAmount) {
+  let rounds = 1;
+
+  while (mySoldiersAmount > 0 || enemySoldiersAmount > 0) {
+    enemySoldiersAmount -= mySoldiersAmount;
+    if (enemySoldiersAmount <= 0) {
+      return rounds;
+    }
+    mySoldiersAmount -= enemySoldiersAmount;
+    if (mySoldiersAmount <= 0) {
+      return -1;
+    }
+    rounds++;
   }
 }
 

@@ -2,3 +2,5 @@ node_modules
 .vscode
 input.txt
 output.txt
+console.log
+win-maximum2.test.js

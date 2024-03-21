@@ -91,7 +91,7 @@ function getInput(useTestInput = false, testInput = false) {
 
   const board = createBoard(sideSize);
 
-    // printBoard(sideSize, board);
+  // printBoard(sideSize, board);
 
   let coordinatesLeft = [];
   let coordinatesRight = [];
@@ -157,7 +157,7 @@ function moveDirectlyLeft(board, middleColumn, coordinates, sideSize) {
 
     while (canGoLeft(board, x, y)) {
       makeStep(board, x, y, "left");
-        // printBoard(sideSize, board);
+      // printBoard(sideSize, board);
       --y;
       ++steps;
 
@@ -186,7 +186,7 @@ function moveDirectlyRight(board, middleColumn, coordinates, sideSize) {
 
     while (canGoRight(board, x, y)) {
       makeStep(board, x, y, "right");
-        // printBoard(sideSize, board);
+      // printBoard(sideSize, board);
       ++y;
       ++steps;
 
@@ -257,8 +257,7 @@ function processRightSide(board, coordinates, middleColumn, sideSize, x, y) {
       ++x;
       ++steps;
 
-
-      if (x === index) {
+      if (y - 1 === middleColumn && board[x][y - 1] === 0) {
         ++steps;
         findPlace = true;
         makeStep(board, x, y, "left");
@@ -272,7 +271,6 @@ function processRightSide(board, coordinates, middleColumn, sideSize, x, y) {
         --y;
         ++steps;
       }
-    
     }
 
     if (!findPlace) {
@@ -342,7 +340,7 @@ function processLeftSide(board, coordinates, middleColumn, sideSize, x, y) {
       ++x;
       ++steps;
 
-      if (x === index) {
+      if (y + 1 === middleColumn && board[x][y + 1] === 0) {
         ++steps;
         findPlace = true;
         makeStep(board, x, y, "right");
@@ -352,7 +350,7 @@ function processLeftSide(board, coordinates, middleColumn, sideSize, x, y) {
 
       if (canGoRight(board, x, y)) {
         //  console.log("go right");
-    
+
         makeStep(board, x, y, "right");
         //  printBoard(sideSize, board);
         ++y;
@@ -410,24 +408,28 @@ function countStepsToFillColumn(
     //  console.log("left-reminder", leftReminder);
     //  console.log("right-reminder", rightReminder);
 
-    //  printBoard(sideSize, board);
+    printBoard(sideSize, board);
 
     leftReminder = sortFromUpToDown(leftReminder, middleColumn);
     rightReminder = sortFromUpToDown(rightReminder, middleColumn);
 
-    //  console.log(leftReminder);
-    //  console.log(rightReminder);
+    console.log(leftReminder);
+    console.log(rightReminder);
 
     while (leftReminder.length > 0 || rightReminder.length > 0) {
       let currentCoordinate;
       let side;
+
       if (leftReminder.length > 0 && rightReminder.length > 0) {
         currentCoordinate =
           leftReminder[0][0] > rightReminder[0][0]
             ? rightReminder[0]
             : leftReminder[0];
         side = leftReminder[0][0] > rightReminder[0][0] ? "right" : "left";
-        //  console.log(`processing the side: ${side}`);
+
+        console.log(`coordinate to process: ${currentCoordinate}`);
+
+        console.log(`processing the side: ${side}`);
       } else if (leftReminder.length > 0) {
         currentCoordinate = leftReminder[0];
         side = "left";
@@ -486,8 +488,6 @@ function countStepsToFillColumn(
 }
 
 function moveStackedCoordinate(board, x, y, size, coordinates) {
-   let index;
-  //  console.log(board);
   //  console.log("x", x);
   //  console.log("y", y);
   //  console.log("data before splice", coordinates);
@@ -518,33 +518,6 @@ function moveStackedCoordinate(board, x, y, size, coordinates) {
       }
       //  console.log("LAst index", latestIndex);
 
-        let lastHyndrance = [coord - 1, y];
-        // console.log("lats", lastHyndrance);
-
-       for (let i = 0; i < coordinates.length; i++) {
-         if (
-           coordinates[i][0] === lastHyndrance[0] &&
-           coordinates[i][1] === lastHyndrance[1]
-         ) {
-           index = i;
-          //  console.log("StackData", stackedCoordinates);
-
-           for (let n = index; n < coordinates.length; ++n) {
-             if (
-               stackedCoordinates.length > 0 &&
-               stackedCoordinates.some(
-                 (coord) =>
-                   coord[0] === coordinates[n][0] &&
-                   coord[1] === coordinates[n][1]
-               )
-             ) {
-              //  console.log("Find one more hyndrance!, increase index!");
-
-               index = n;
-             }
-           }
-         }
-       }
       if (latestIndex === -1) {
         throw Error("Logic is wrong. Didn't find a hyndrance");
       } else {

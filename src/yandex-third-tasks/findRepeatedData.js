@@ -23,85 +23,19 @@ function program() {
 }
 
 function findRepeated(firstArray, secondArray, thirdArray) {
-  // console.log(firstArray);
-  // console.log(secondArray);
-  // console.log(thirdArray);
+  let set1 = new Set(firstArray);
+  let set2 = new Set(secondArray);
+  let set3 = new Set(thirdArray);
 
-  let map1 = createMap(firstArray);
-  let map2 = createMap(secondArray);
-  let map3 = createMap(thirdArray);
-
-  // console.log(map1);
-  // console.log(map2);
-  // console.log(map3);
+  let intersection1 = [...set1].filter(x => set2.has(x));
+  let intersection2 = [...set1].filter(x => set3.has(x));
+  let intersection3 = [...set2].filter(x => set3.has(x));
   
-  if (map1.size === map2.size && map2.size === map3.size) {
-    let result = compareThreeMaps(map1, map2, map3);
+  let resultSet = new Set([...intersection1, ...intersection2, ...intersection3]);  
+  let resultData = Array.from(resultSet).sort((a, b) => a - b);
+  
+  return resultData;
 
-    if (result === 1) {
-      return [...map1.keys()].map(Number).sort((a, b) => a - b);
-    }
-
-    let result2 = compareTwoMaps(map2, map3);
-    if (result2 === 1) {
-      return [...map2.keys()].map(Number).sort((a, b) => a - b);
-    }
-
-  } else if (map1.size === map2.size) {
-    let result = compareTwoMaps(map1, map2);
-    if (result === 1) {
-      return [...map1.keys()].map(Number).sort((a, b) => a - b);
-    }
-  } else if (map1.size === map3.size) {
-    let result = compareTwoMaps(map1, map3);
-    if (result === 1) {
-      return [...map1.keys()].map(Number).sort((a, b) => a - b);
-    }
-  } else if (map2.size === map3.size) {
-    let result = compareTwoMaps(map2, map3);
-    if (result === 1) {
-      return [...map2.keys()].map(Number).sort((a, b) => a - b);
-    }
-  }
-
-  return [];
 }
-
-function compareTwoMaps(map1, map2) {
-  for (let key of map1.keys()) {
-    if (!map2.has(key)) {
-      return -1;
-    }
-  }
-  return 1;
-}
-
-function compareThreeMaps(map1, map2, map3) {
-  let firstSecondDifferent = false;
-  let firstThirdDifferent = false;
-
-  for (let key of map1.keys()) {
-    if (firstSecondDifferent && firstThirdDifferent) {
-      break;
-    }
-    if (!firstSecondDifferent && !map2.has(key)) {
-      firstSecondDifferent = true;
-    }
-    if (!firstThirdDifferent && !map3.has(key)) {
-      firstThirdDifferent = true;
-    }
-  }
-  return (firstSecondDifferent && firstThirdDifferent) ? -1 : 1;
-}
-
-function createMap(array) {
-  let map = new Map();
-
-  for (let number of array) {
-    map.set(number, true);
-  }
-  return map;
-}
-
 
 module.exports = {findRepeated};

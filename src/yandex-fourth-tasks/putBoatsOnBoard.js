@@ -5,7 +5,7 @@ program();
 function getInput() {
   let fileContent = fs.readFileSync("input.txt", "utf8").split("\n");
 
-  return Number(fileContent[0]);
+  return fileContent[0];
 }
 
 function sendOutput(result) {
@@ -21,19 +21,16 @@ function program() {
 }
 
 function totalSpaceTaken(coefficient) {
-  let boatsAmount = (coefficient * (coefficient + 1)) / 2;
+  coefficient = BigInt(coefficient);
+
+  let boatsAmount = (coefficient * (coefficient + 1n)) / 2n;
   // console.log("boats:", boatsAmount);
 
-  let gaps = boatsAmount > 0 ? boatsAmount - 1 : 0;
-  let spaceAllBoatsTake = 0;
+  let gaps = boatsAmount - 1n;
+  let spaceAllBoatsTake = 0n;
 
-  // spaceAllBoatsTake =  coefficient * (coefficient + 1) * (coefficient + 2) / 6;
-  for (let i = 1; i <= coefficient; ++i) {
-    let spaceForOneSizeBoats = i * (coefficient - i + 1);
-    // console.log("one size", i, " takes:", spaceForOneSizeBoats);
-
-    spaceAllBoatsTake += spaceForOneSizeBoats;
-  }
+  spaceAllBoatsTake =  coefficient * (coefficient + 1n) * (coefficient + 2n) / 6n;
+  
   // console.log("spaceAllBoatsTake:", spaceAllBoatsTake);
 
   // console.log("total space take: ", spaceAllBoatsTake + gaps);
@@ -44,26 +41,26 @@ function totalSpaceTaken(coefficient) {
 function countBoatsAmount(cellsAmount) {
   // console.log("start: ", cellsAmount);
 
-  if (cellsAmount < 2) {
+  if (cellsAmount < 2n) {
     return cellsAmount;
   }
 
-  let left = 1;
-  let right =  Math.floor(Math.sqrt(cellsAmount));
+  let left = BigInt(1);
+  let right =  BigInt(cellsAmount);
 
-  while (left <= right) {
-    let suggestedCoef = Math.floor((left + right) / 2);
+  while (left < right) {
+    let suggestedCoef = BigInt((left + right + 1n) / 2n);
     // console.log("suggestedCoef", suggestedCoef);
 
-    if (totalSpaceTaken(suggestedCoef) > cellsAmount) {
-      right = suggestedCoef - 1;
+    if (totalSpaceTaken(suggestedCoef) <= cellsAmount) {
+      left = suggestedCoef
     } else {
-      left = suggestedCoef + 1;
+     right = suggestedCoef - 1n
     }
     // console.log(`left: ${left}, right: ${right}`);
   }
 
-  return right;
+  return Number(left);
 }
 
 module.exports = { countBoatsAmount, totalSpaceTaken };

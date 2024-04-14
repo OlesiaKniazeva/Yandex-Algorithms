@@ -1,4 +1,4 @@
-const { getGoalsToWin } = require("../../src/football-match");
+const { getGoalsToWin } = require("../../src/yandex-first-tasks/football-match");
 
 it("now goals amount the same, now play outside", () => {
   const goalsFirstMatch = [0, 0];
